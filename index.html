@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contagem Decrescente — Natal & Torneio</title>
+    <!-- Meta etiquetas Open Graph para pré-visualização ao partilhar no WhatsApp -->
+    <meta property="og:title" content="Contagem Decrescente — Natal & Torneio">
+    <meta property="og:description" content="Acompanhe em tempo real quantos dias faltam para o Natal e o Torneio de Flechas na Taberna!">
+    <meta property="og:type" content="website">
+    <!-- Ícone SVG da aplicação (favicon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%2310b981' stroke-width='4'/%3E%3Cpath d='M32 18v14l9 6' fill='none' stroke='%23fbbf24' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <!-- Carregamento do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carregamento da fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+    <!-- Cabeçalho da Aplicação -->
+    <header class="w-full max-w-3xl mx-auto pt-6 pb-4 px-4 sm:px-6">
+        <div class="flex items-start justify-between gap-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Atualização em tempo real</span>
+            </div>
+
+            <!-- Botão compacto de partilha no WhatsApp -->
+            <a id="whatsappShareBtn" href="https://api.whatsapp.com/send?text=Contagem%20Decrescente" target="_top" rel="noopener noreferrer" aria-label="Partilhar no WhatsApp" title="Partilhar no WhatsApp" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-600/20 hover:bg-emerald-600/30 active:scale-95 border border-emerald-500/40 text-emerald-300 text-xs font-semibold transition-all duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.546 20.2c-.151.512.326.988.838.838l3.033-.893A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                </svg>
+                <span>Partilhar App</span>
+            </a>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mt-3">
+            Contagem Decrescente
+        </h1>
+        <p id="currentDateDisplay" class="text-sm sm:text-base text-slate-400 mt-1">
+            A carregar data atual...
+        </p>
+    </header>
+
+    <!-- Conteúdo Principal: Cartões dos Cronómetros -->
+    <main class="w-full max-w-3xl mx-auto px-4 sm:px-6 space-y-6 my-2">
+
+        <!-- Cartão 1: Contagem para o Natal -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/50 border border-rose-500/25 p-6 sm:p-8 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div class="flex items-center gap-3.5">
+                    <!-- Ícone SVG em destaque -->
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-400 shrink-0 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 2L6.5 9.5h3.5L5 16.5h14l-5-7h3.5L12 2z"/>
+                            <path d="M12 16.5v5.5"/>
+                            <path d="M9 22h6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white leading-tight">Contagem para o Natal</h2>
+                        <p id="xmasTargetLabel" class="text-xs sm:text-sm text-rose-200/75 mt-0.5">
+                            25 de Dezembro
+                        </p>
+                    </div>
+                </div>
+                <!-- Banner especial caso seja dia de Natal -->
+                <div id="xmasSpecialBadge" class="hidden self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs sm:text-sm font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-rose-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                    </svg>
+                    <span>Feliz Natal!</span>
+                </div>
+            </div>
+
+            <!-- Grelha do Cronómetro de Natal -->
+            <div class="grid grid-cols-4 gap-2.5 sm:gap-4">
+                <!-- Dias em destaque -->
+                <div class="col-span-4 sm:col-span-1 rounded-2xl bg-rose-500/15 border border-rose-400/30 p-4 flex flex-col items-center justify-center text-center">
+                    <span id="xmas-days" class="text-4xl sm:text-5xl font-extrabold text-rose-400 tabular-nums tracking-tight">--</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-rose-200/80 mt-1">Dias</span>
+                </div>
+
+                <!-- Horas, Minutos, Segundos -->
+                <div class="col-span-4 sm:col-span-3 grid grid-cols-3 gap-2.5 sm:gap-4">
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="xmas-hours" class="text-2xl sm:text-4xl font-bold text-white tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Horas</span>
+                    </div>
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="xmas-minutes" class="text-2xl sm:text-4xl font-bold text-white tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Minutos</span>
+                    </div>
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="xmas-seconds" class="text-2xl sm:text-4xl font-bold text-rose-300 tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Segundos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cartão 2: Contagem para o Torneio de Flechas na Taberna -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 border border-emerald-500/25 p-6 sm:p-8 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div class="flex items-center gap-3.5">
+                    <!-- Ícone SVG em destaque (Alvo com Flecha) -->
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <path d="M21 3l-9 9"/>
+                            <path d="M16 3h5v5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 id="dartsTitle" class="text-lg sm:text-xl font-bold text-white leading-tight">Torneio de Flechas na Taberna</h2>
+                        <p id="dartsTargetLabel" class="text-xs sm:text-sm text-emerald-200/75 mt-0.5">
+                            4 de Dezembro de 2026 às 00:00
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 self-start sm:self-center">
+                    <!-- Banner especial caso já tenha chegado o dia do torneio -->
+                    <div id="dartsSpecialBadge" class="hidden inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 text-xs sm:text-sm font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>O Torneio começou!</span>
+                    </div>
+
+                    <!-- Botão para abrir o link do Torneio -->
+                    <a href="https://dardos-torneio--71xybjqf.preview.emergentagent.com/tv" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/20 transition-all duration-150">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/>
+                        </svg>
+                        <span>Ver Torneio</span>
+                    </a>
+
+                    <!-- Botão para abrir o ficheiro .jpg dos participantes -->
+                    <a href="participantes.jpg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 active:scale-95 border border-emerald-500/40 text-emerald-300 text-xs sm:text-sm font-bold transition-all duration-150">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Ver participantes</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Grelha do Cronómetro do Torneio de Flechas -->
+            <div class="grid grid-cols-4 gap-2.5 sm:gap-4">
+                <!-- Dias em destaque -->
+                <div class="col-span-4 sm:col-span-1 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 p-4 flex flex-col items-center justify-center text-center">
+                    <span id="darts-days" class="text-4xl sm:text-5xl font-extrabold text-emerald-400 tabular-nums tracking-tight">--</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-emerald-200/80 mt-1">Dias</span>
+                </div>
+
+                <!-- Horas, Minutos, Segundos -->
+                <div class="col-span-4 sm:col-span-3 grid grid-cols-3 gap-2.5 sm:gap-4">
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="darts-hours" class="text-2xl sm:text-4xl font-bold text-white tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Horas</span>
+                    </div>
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="darts-minutes" class="text-2xl sm:text-4xl font-bold text-white tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Minutos</span>
+                    </div>
+                    <div class="rounded-2xl bg-slate-950/60 border border-slate-800/80 p-3.5 sm:p-4 flex flex-col items-center justify-center text-center">
+                        <span id="darts-seconds" class="text-2xl sm:text-4xl font-bold text-emerald-300 tabular-nums">--</span>
+                        <span class="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 mt-1">Segundos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-4 pb-6 text-center text-xs text-slate-500">
+        <p id="currentClock" class="tabular-nums">Hora local: --:--:--</p>
+    </footer>
+
+    <script>
+        /**
+         * Formata um número para ter sempre pelo menos dois dígitos (ex: 5 -> "05")
+         */
+        function padZero(num) {
+            return String(Math.floor(num)).padStart(2, '0');
+        }
+
+        /**
+         * Calcula a data alvo do próximo Natal
+         */
+        function getNextChristmas(now) {
+            const year = now.getFullYear();
+            const isChristmasDay = (now.getMonth() === 11 && now.getDate() === 25);
+
+            if (isChristmasDay) {
+                return {
+                    targetDate: new Date(year + 1, 11, 25, 0, 0, 0, 0),
+                    isToday: true,
+                    targetYear: year + 1
+                };
+            }
+
+            let target = new Date(year, 11, 25, 0, 0, 0, 0);
+            if (now > target) {
+                target = new Date(year + 1, 11, 25, 0, 0, 0, 0);
+            }
+
+            return {
+                targetDate: target,
+                isToday: false,
+                targetYear: target.getFullYear()
+            };
+        }
+
+        /**
+         * Converte milissegundos numa estrutura de dias, horas, minutos e segundos
+         */
+        function calculateTimeRemaining(diffMs) {
+            const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return { days, hours, minutes, seconds };
+        }
+
+        /**
+         * Atualiza a data por extenso no cabeçalho
+         */
+        function updateHeaderDate(now) {
+            const formatter = new Intl.DateTimeFormat('pt-PT', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            const formatted = formatter.format(now);
+            document.getElementById('currentDateDisplay').textContent =
+                formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        }
+
+        /**
+         * Função principal executada a cada segundo
+         */
+        function updateCountdowns() {
+            const now = new Date();
+            updateHeaderDate(now);
+
+            // 1. Atualização do Natal
+            const xmasInfo = getNextChristmas(now);
+            const xmasBadge = document.getElementById('xmasSpecialBadge');
+            const xmasLabel = document.getElementById('xmasTargetLabel');
+
+            if (xmasInfo.isToday) {
+                xmasBadge.classList.remove('hidden');
+                xmasLabel.textContent = `Hoje é Natal! Próximo em 25 de Dezembro de ${xmasInfo.targetYear}`;
+            } else {
+                xmasBadge.classList.add('hidden');
+                xmasLabel.textContent = `25 de Dezembro de ${xmasInfo.targetYear}`;
+            }
+
+            const xmasTime = calculateTimeRemaining(xmasInfo.targetDate - now);
+            document.getElementById('xmas-days').textContent = xmasTime.days;
+            document.getElementById('xmas-hours').textContent = padZero(xmasTime.hours);
+            document.getElementById('xmas-minutes').textContent = padZero(xmasTime.minutes);
+            document.getElementById('xmas-seconds').textContent = padZero(xmasTime.seconds);
+
+            // 2. Atualização do Torneio de Flechas na Taberna (4 de Dezembro de 2026)
+            const dartsTargetDate = new Date(2026, 11, 4, 0, 0, 0, 0); // Mês 11 = Dezembro
+            const dartsBadge = document.getElementById('dartsSpecialBadge');
+            const dartsLabel = document.getElementById('dartsTargetLabel');
+            const dartsDiff = dartsTargetDate - now;
+            let dartsTime = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+            if (dartsDiff <= 0) {
+                dartsBadge.classList.remove('hidden');
+                dartsLabel.textContent = '4 de Dezembro de 2026 — Já começou!';
+            } else {
+                dartsBadge.classList.add('hidden');
+                dartsLabel.textContent = 'Sexta-feira, 4 de Dezembro de 2026';
+                dartsTime = calculateTimeRemaining(dartsDiff);
+            }
+
+            document.getElementById('darts-days').textContent = dartsTime.days;
+            document.getElementById('darts-hours').textContent = padZero(dartsTime.hours);
+            document.getElementById('darts-minutes').textContent = padZero(dartsTime.minutes);
+            document.getElementById('darts-seconds').textContent = padZero(dartsTime.seconds);
+
+            // 3. Atualização do relógio no rodapé
+            document.getElementById('currentClock').textContent =
+                `Hora local: ${now.toLocaleTimeString('pt-PT')}`;
+
+            // 4. Atualiza o link direto do WhatsApp com a contagem e o endereço da aplicação
+            const whatsappBtn = document.getElementById('whatsappShareBtn');
+            if (whatsappBtn) {
+                const currentUrl = window.location.href;
+                const isPublicUrl = currentUrl.startsWith('http') && !currentUrl.includes('srcdoc') && !currentUrl.includes('localhost') && !currentUrl.includes('usercontent.goog');
+                let shareText = `🎄 Contagem Decrescente\n\n🎅 Natal: faltam ${xmasTime.days} dias\n🏹 Torneio de Flechas na Taberna: faltam ${dartsTime.days} dias`;
+                if (isPublicUrl) {
+                    shareText += `\n\nAbre a app aqui: ${currentUrl}`;
+                }
+                whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+            }
+        }
+
+        // Inicializa imediatamente ao carregar e agenda atualização a cada segundo
+        window.addEventListener('DOMContentLoaded', () => {
+            updateCountdowns();
+            setInterval(updateCountdowns, 1000);
+        });
+    </script>
+</body>
+</html>
