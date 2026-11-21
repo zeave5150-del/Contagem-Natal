@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contagem Decrescente — Natal &amp; Torneio</title>
+  <meta property="og:title" content="Contagem Decrescente — Natal &amp; Torneio">
+  <meta property="og:description" content="Acompanhe em tempo real quantos dias faltam para o Natal e o Torneio de Flechas na Taberna!">
+  <meta property="og:type" content="website">
+
+  <!-- Ícone da Aplicação -->
+  <link rel="icon" type="image/png" href="icone.png">
+  <link rel="apple-touch-icon" href="icone.png">
+
+  <!-- Tailwind CSS e Fonte Inter -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+  <!-- Cabeçalho -->
+  <header class="w-full max-w-3xl mx-auto pt-5 pb-2 px-4">
+    <div class="flex items-start justify-between gap-4">
+      <span class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-400">
+        ● Atualização em tempo real
+      </span>
+      <a
+        id="share"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-3 py-2 rounded-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold hover:bg-emerald-600/30 transition"
+        href="https://api.whatsapp.com/send?text=Contagem%20Decrescente"
+      >
+        Partilhar App
+      </a>
+    </div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold mt-2">Contagem Decrescente</h1>
+    <p id="date" class="text-sm text-slate-400 mt-1">sexta-feira, 20 de novembro de 2026</p>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="w-full max-w-3xl mx-auto px-4 mt-2 space-y-4">
+
+    <!-- Secção Torneio de Flechas na Taberna -->
+    <section class="rounded-3xl bg-gradient-to-br from-slate-900 to-emerald-950/40 border border-emerald-500/25 p-6 sm:p-8 shadow-2xl">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-bold">🏹 Torneio de Flechas na Taberna</h2>
+          <p id="dlabel" class="text-sm text-emerald-200/75 mt-1">Sexta-feira, 4 de Dezembro de 2026</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            id="btn-reclamacoes"
+            class="px-4 py-2 rounded-full bg-emerald-500 text-slate-950 text-xs font-bold shadow-lg hover:bg-emerald-400 active:scale-95 transition"
+          >
+            Reclamações Clik Aqui
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-3 mt-6 tabular-nums">
+        <div class="col-span-4 sm:col-span-1 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 p-4 text-center">
+          <b id="dd" class="text-5xl text-emerald-400">13</b>
+          <small class="block text-xs text-emerald-200/80 mt-1">Dias</small>
+        </div>
+        <div class="col-span-4 sm:col-span-3 grid grid-cols-3 gap-3">
+          <div class="rounded-2xl bg-slate-950/60 p-4 text-center">
+            <b id="dh" class="text-3xl">20</b>
+            <small class="block text-xs text-slate-400 mt-1">Horas</small>
+          </div>
+          <div class="rounded-2xl bg-slate-950/60 p-4 text-center">
+            <b id="dm" class="text-3xl">43</b>
+            <small class="block text-xs text-slate-400 mt-1">Minutos</small>
+          </div>
+          <div class="rounded-2xl bg-slate-950/60 p-4 text-center">
+            <b id="ds" class="text-3xl text-emerald-300">05</b>
+            <small class="block text-xs text-slate-400 mt-1">Segundos</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendário de Jogos (Calend_Torneio.jpg) -->
+    <section class="rounded-3xl bg-slate-900/90 border border-emerald-500/25 p-3 sm:p-4 shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-2 pb-2">
+        <span class="text-xs font-semibold text-emerald-300">📅 Calendário dos Jogos</span>
+        <span class="text-[11px] text-slate-400">Toque na imagem para ampliar</span>
+      </div>
+      <div id="calend-wrapper" class="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
+        <img
+          id="calend-img"
+          src="Calend_Torneio.jpg"
+          alt="Calendário do Torneio de Flechas na Taberna"
+          onerror="this.style.display='none'; document.getElementById('calend-fallback').style.display='block';"
+          class="w-full h-auto object-contain cursor-zoom-in transition hover:opacity-95"
+        >
+        <!-- Fallback caso Calend_Torneio.jpg não esteja presente na pasta -->
+        <div id="calend-fallback" style="display: none;" class="p-4 sm:p-5 space-y-3 text-left text-xs sm:text-sm">
+          <div class="rounded-2xl bg-slate-900 border border-amber-500/40 p-3.5">
+            <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold uppercase tracking-wide">
+              <span>Máquina de Jogo • #1 Oitavos-de-Final</span>
+              <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px]">A decorrer</span>
+            </div>
+            <div class="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <p class="font-bold text-slate-100">Tiago Bragança <span class="text-slate-500 font-normal">vs</span> Paulo Proença "Pai"</p>
+              <span class="text-emerald-300 font-semibold">Dia 4 dezembro, Hora a Definir</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <p class="text-xs font-bold text-slate-300 px-1">Próximos jogos (Oitavos-de-Final)</p>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#2</strong> Lécio Bragança vs Paulo Proença "Filho"</span>
+              <span class="text-slate-300 font-medium">Dia 4 ou 5 de dezembro</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#3</strong> Francisco Arraiolos vs Manuel Serralha</span>
+              <span class="text-slate-300 font-medium">Dia 5 ou 6 de dezembro</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#4</strong> Raquel Bragança vs Artur Maçarico</span>
+              <span class="text-slate-300 font-medium">Dia 4, 5 ou 6 de dezembro</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#5</strong> José Lopes (Zé Ave) vs Susana Rosado</span>
+              <span class="text-slate-300 font-medium">Poderá ser dia 4 e depois de 10 de dezembro</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#6</strong> Rui Rosado vs Vinicius Zuca</span>
+              <span class="text-slate-300 font-medium">Dia 4, 5, 6 ou outro fim de semana</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#7</strong> João Rosado vs Tiago Mendes</span>
+              <span class="text-slate-300 font-medium">Dia 4, 5, 6, 7, 8 não que é Feriado e terça Feira</span>
+            </div>
+            <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span><strong class="text-emerald-400">#8</strong> Tiago Malaquias vs Roberto (Dono da Taberna)</span>
+              <span class="text-slate-300 font-medium">Qualquer dos dias anteriores</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé com Hora Local e Ícone ZAve -->
+  <footer class="w-full max-w-3xl mx-auto px-4 py-6 mt-auto text-center text-xs text-slate-500">
+    <div class="inline-flex items-center justify-center gap-3 px-4 py-2 rounded-full bg-slate-900/90 border border-slate-800 shadow-lg">
+      <img
+        id="footer-icon"
+        src="icone.png"
+        alt="Logótipo ZAve"
+        onerror="this.style.display='none'; document.getElementById('footer-icon-fallback').style.display='block';"
+        class="w-8 h-8 object-cover rounded-full border border-white/20"
+      >
+      <svg
+        id="footer-icon-fallback"
+        style="display: none;"
+        class="w-8 h-8 rounded-full border border-white/20 shrink-0"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="Logótipo ZAve"
+      >
+        <circle cx="50" cy="50" r="49" fill="#061011"/>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff" stroke-width="3"/>
+        <path d="M18 26 C36 18, 56 26, 65 40 C54 36, 43 38, 34 45 C27 37, 22 31, 18 26 Z" fill="#ffffff"/>
+        <circle cx="45" cy="34" r="4.5" fill="#061011"/>
+        <path d="M66 40 C74 31, 83 32, 88 38 C80 39, 73 43, 69 48 Z" fill="#ffffff"/>
+        <circle cx="75" cy="38" r="3" fill="#061011"/>
+        <path d="M55 46 L66 44 L61 67 L52 57 Z" fill="#ffffff"/>
+        <path d="M46 59 L62 68 L58 88 L49 71 Z" fill="#ffffff"/>
+        <text x="14" y="73" fill="#ffffff" font-family="Inter, sans-serif" font-weight="800" font-size="18">ZAve</text>
+      </svg>
+      <p id="clock" class="text-slate-200 font-semibold">Hora local: 00:00:00</p>
+    </div>
+  </footer>
+
+  <!-- Modal / Caixa de Mensagem de Reclamações -->
+  <div
+    id="modal-reclamacoes"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <div class="w-full max-w-md rounded-3xl bg-slate-900 border border-emerald-500/40 p-6 sm:p-8 text-center shadow-2xl">
+      <h3 id="modal-title" class="text-xl font-extrabold text-emerald-400">
+        Livro de Reclamações &amp; Sugestões
+      </h3>
+      <p id="modal-texto-reclamacao" class="mt-4 text-sm sm:text-base text-slate-100 leading-relaxed">
+        Todas as reclamações e sugestões são e serão bem vindas. No entanto, serão analisadas. sendo que a Decisão será, <strong class="text-emerald-300 font-bold">"Sem Fundamento"</strong>
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          id="btn-fechar-reclamacoes"
+          class="px-6 py-2.5 rounded-full bg-emerald-500 text-slate-950 text-xs font-bold shadow-lg hover:bg-emerald-400 active:scale-95 transition"
+        >
+          Entendido
+        </button>
+        <button
+          type="button"
+          id="btn-mesmo-reclamar"
+          class="px-5 py-2.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold shadow-lg hover:bg-rose-500/30 active:scale-95 transition"
+        >
+          Queres Mesmo Reclamar?
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox para ampliar a imagem do Calendário -->
+  <div
+    id="modal-imagem"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-sm cursor-zoom-out"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="relative max-w-5xl w-full flex flex-col items-center">
+      <button
+        type="button"
+        id="btn-fechar-imagem"
+        class="self-end mb-2 px-4 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold hover:bg-slate-700 transition"
+      >
+        Fechar ✕
+      </button>
+      <img
+        src="Calend_Torneio.jpg"
+        alt="Calendário do Torneio Ampliado"
+        class="w-full max-h-[85vh] object-contain rounded-2xl border border-slate-700 shadow-2xl"
+      >
+    </div>
+  </div>
+
+  <!-- Lógica de Contagem em Tempo Real e Modal -->
+  <script>
+    const pad = (n) => String(Math.floor(n)).padStart(2, '0');
+
+    function parts(ms) {
+      const t = Math.max(0, Math.floor(ms / 1000));
+      return {
+        d: Math.floor(t / 86400),
+        h: Math.floor((t % 86400) / 3600),
+        m: Math.floor((t % 3600) / 60),
+        s: t % 60
+      };
+    }
+
+    function tick() {
+      try {
+        const now = new Date();
+        const darts = new Date(2026, 11, 4);
+
+        const b = parts(darts - now);
+
+        const dateEl = document.getElementById('date');
+        const dlabelEl = document.getElementById('dlabel');
+        const clockEl = document.getElementById('clock');
+        const shareEl = document.getElementById('share');
+
+        if (dateEl) {
+          dateEl.textContent = new Intl.DateTimeFormat('pt-PT', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }).format(now);
+        }
+
+        if (dlabelEl) {
+          dlabelEl.textContent = darts > now
+            ? 'Sexta-feira, 4 de Dezembro de 2026'
+            : '4 de Dezembro de 2026 — Já começou!';
+        }
+
+        const updates = [
+          ['dd', b.d],
+          ['dh', pad(b.h)],
+          ['dm', pad(b.m)],
+          ['ds', pad(b.s)]
+        ];
+
+        updates.forEach(([id, val]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val;
+        });
+
+        if (clockEl) {
+          clockEl.textContent = 'Hora local: ' + now.toLocaleTimeString('pt-PT');
+        }
+
+        if (shareEl) {
+          const shareText = `🏹 Torneio de Flechas na Taberna: faltam ${Math.max(0, b.d)} dias\n\n${window.location.href}`;
+          shareEl.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText);
+        }
+      } catch (err) {
+        console.error('Erro ao atualizar contagem:', err);
+      }
+    }
+
+    // Eventos do Modal de Reclamações
+    const btnReclamacoes = document.getElementById('btn-reclamacoes');
+    const modalReclamacoes = document.getElementById('modal-reclamacoes');
+    const modalTextoReclamacao = document.getElementById('modal-texto-reclamacao');
+    const btnFecharReclamacoes = document.getElementById('btn-fechar-reclamacoes');
+    const btnMesmoReclamar = document.getElementById('btn-mesmo-reclamar');
+
+    const textoInicialReclamacao = 'Todas as reclamações e sugestões são e serão bem vindas. No entanto, serão analisadas. sendo que a Decisão será, <strong class="text-emerald-300 font-bold">"Sem Fundamento"</strong>';
+
+    function abrirModal() {
+      if (!modalReclamacoes) return;
+      if (modalTextoReclamacao) {
+        modalTextoReclamacao.innerHTML = textoInicialReclamacao;
+      }
+      if (btnMesmoReclamar) {
+        btnMesmoReclamar.classList.remove('hidden');
+      }
+      modalReclamacoes.classList.remove('hidden');
+      modalReclamacoes.classList.add('flex');
+    }
+
+    function fecharModal() {
+      if (!modalReclamacoes) return;
+      modalReclamacoes.classList.add('hidden');
+      modalReclamacoes.classList.remove('flex');
+    }
+
+    if (btnReclamacoes) {
+      btnReclamacoes.addEventListener('click', abrirModal);
+    }
+    if (btnFecharReclamacoes) {
+      btnFecharReclamacoes.addEventListener('click', fecharModal);
+    }
+    if (btnMesmoReclamar) {
+      btnMesmoReclamar.addEventListener('click', () => {
+        if (modalTextoReclamacao) {
+          modalTextoReclamacao.innerHTML = '<strong class="text-rose-400 text-base sm:text-lg font-extrabold">Vais Mesmo para Safira e Levas Com Um Pau!</strong>';
+        }
+        btnMesmoReclamar.classList.add('hidden');
+      });
+    }
+    if (modalReclamacoes) {
+      modalReclamacoes.addEventListener('click', (e) => {
+        if (e.target === modalReclamacoes) fecharModal();
+      });
+    }
+
+    // Lightbox da imagem do calendário
+    const calendImg = document.getElementById('calend-img');
+    const modalImagem = document.getElementById('modal-imagem');
+    const btnFecharImagem = document.getElementById('btn-fechar-imagem');
+
+    function abrirImagem() {
+      if (!modalImagem) return;
+      modalImagem.classList.remove('hidden');
+      modalImagem.classList.add('flex');
+    }
+
+    function fecharImagem() {
+      if (!modalImagem) return;
+      modalImagem.classList.add('hidden');
+      modalImagem.classList.remove('flex');
+    }
+
+    if (calendImg) {
+      calendImg.addEventListener('click', abrirImagem);
+    }
+    if (btnFecharImagem) {
+      btnFecharImagem.addEventListener('click', fecharImagem);
+    }
+    if (modalImagem) {
+      modalImagem.addEventListener('click', (e) => {
+        if (e.target === modalImagem) fecharImagem();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        fecharModal();
+        fecharImagem();
+      }
+    });
+
+    // Iniciar relógio e contagem
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
